@@ -4,9 +4,9 @@ CONFIGMANTA=/home/grads/gzpan2/apps/miniconda3/envs/cityu2/bin/configManta.py
 SAMTOOLS=samtools
 LUMPY_EXPRESS=/home/grads/gzpan2/apps/lumpy-sv/bin/lumpyexpress
 SVTYPER=/home/grads/gzpan2/apps/miniconda3/envs/cityu2/bin/svtyper
-SCRIPTS=/public/panguangze/surv/reads_sv/pipeline/scripts
+SCRIPTS=/home/grads/gzpan2/apps/esv_pipe/scripts
 SURVIVOR=/home/grads/gzpan2/apps/SURVIVOR/Debug/SURVIVOR
-EXTRACT_HAIR = /home/grads/gzpan2/clion/extractHairs/build/ExtractHAIRs
+EXTRACT_HAIR=/home/grads/gzpan2/clion/extractHairs/build/ExtractHAIRs
 #ESplitReads_BwaMem=/home/grads/gzpan2/apps/lumpy-sv//scripts/extractSplitReads_BwaMem
 #GRIDSS=/home/grads/gzpan2/apps/miniconda3/envs/cityu2/share/gridss-2.8.0-0/gridss.jar
 bam=$1
@@ -35,8 +35,8 @@ python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/svaba/svaba.svtyper.sv.vcf
 # manta
 $CONFIGMANTA --bam $bam --referenceFasta $ref --runDir $out_dir/manta --generateEvidenceBam
 $out_dir/manta/runWorkflow.py -m local -j $threads -g 100
-$SVTYPER -B $bam -i $out_dir/manta/results/variants/diploidSV.vcf> $out_dir/manta/manta.svtyper.vcf
-pythoh $SCRIPTS/parser_reads.py -v $out_dir/manta/manta.svtyper.vcf -b $out_dir/manta/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/manta/manta.evidence.vcf
+$SVTYPER -B $bam -i $out_dir/manta/results/variants/diploidSV.vcf.gz > $out_dir/manta/manta.svtyper.vcf
+python3 $SCRIPTS/parser_reads.py -v $out_dir/manta/manta.svtyper.vcf -b $out_dir/manta/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/manta/manta.evidence.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/manta/manta.evidence.vcf > $out_dir/manta/manta.adjusted.vcf
 # lumpy
 # $SAMTOOLS view -uF 0x0002 $bam | $SAMTOOLS view -uF 0x100 - | $SAMTOOLS view -uF 0x0004 - | $SAMTOOLS view -uF 0x0008 - | $SAMTOOLS view -bF 0x0400 - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.discordant.sort.bam
