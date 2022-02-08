@@ -35,12 +35,13 @@ if [ ! -d $out_dir/delly ]; then
 fi
 # svaba
 $SVABA run -t $bam -G $ref -a $out_dir/svaba/svaba --read-tracking --germline -p $threads
-$SVTYPER -B $bam -i $out_dir/svaba/svaba.svaba.sv.vcf > $out_dir/svaba/svaba.svtyper.sv.vcf
+cp $out_dir/svaba/svaba.svaba.sv.vcf  $out_dir/svaba/svaba.svtyper.sv.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/svaba/svaba.svtyper.sv.vcf > $out_dir/svaba/svaba.adjusted.vcf
 # manta
 $CONFIGMANTA --bam $bam --referenceFasta $ref --runDir $out_dir/manta --generateEvidenceBam
 $out_dir/manta/runWorkflow.py -m local -j $threads -g 100
-$SVTYPER -B $bam -i $out_dir/manta/results/variants/diploidSV.vcf.gz > $out_dir/manta/manta.svtyper.vcf
+gunzip $out_dir/manta/results/variants/diploidSV.vcf.gz
+cp $out_dir/manta/results/variants/diploidSV.vcf > $out_dir/manta/manta.svtyper.vcf
 python3 $SCRIPTS/parser_reads.py -v $out_dir/manta/manta.svtyper.vcf -b $out_dir/manta/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/manta/manta.evidence.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/manta/manta.evidence.vcf > $out_dir/manta/manta.adjusted.vcf
 # lumpy
