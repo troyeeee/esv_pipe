@@ -2,12 +2,14 @@
 SVABA=svaba
 CONFIGMANTA=/home/grads/gzpan2/apps/miniconda3/envs/cityu2/bin/configManta.py
 SAMTOOLS=samtools
+BCFTOOLS=bcftools
 LUMPY_EXPRESS=/home/grads/gzpan2/apps/lumpy-sv/bin/lumpyexpress
 SVTYPER=/home/grads/gzpan2/apps/miniconda3/envs/cityu2/bin/svtyper
 SCRIPTS=/home/grads/gzpan2/apps/esv_pipe/scripts
 SURVIVOR=/home/grads/gzpan2/apps/SURVIVOR/Debug/SURVIVOR
 EXTRACT_HAIR=/home/grads/gzpan2/clion/extractHairs/build/ExtractHAIRs
-#ESplitReads_BwaMem=/home/grads/gzpan2/apps/lumpy-sv//scripts/extractSplitReads_BwaMem
+ESplitReads_BwaMem=/home/grads/gzpan2/apps/lumpy-sv/scripts/extractSplitReads_BwaMem
+DELLY=/home/caronkey/docs/cityu/delly/bin/delly
 #GRIDSS=/home/grads/gzpan2/apps/miniconda3/envs/cityu2/share/gridss-2.8.0-0/gridss.jar
 bam=$1
 ref=$2
@@ -25,8 +27,11 @@ fi
 if [ ! -d $out_dir/lumpy ]; then
   mkdir $out_dir/lumpy
 fi
-if [ ! -d $out_dir/gridss ]; then
-  mkdir $out_dir/gridss
+# if [ ! -d $out_dir/gridss ]; then
+#   mkdir $out_dir/gridss
+# fi
+if [ ! -d $out_dir/delly ]; then
+  mkdir $out_dir/delly
 fi
 # svaba
 $SVABA run -t $bam -G $ref -a $out_dir/svaba/svaba --read-tracking --germline -p $threads
@@ -39,23 +44,29 @@ $SVTYPER -B $bam -i $out_dir/manta/results/variants/diploidSV.vcf.gz > $out_dir/
 python3 $SCRIPTS/parser_reads.py -v $out_dir/manta/manta.svtyper.vcf -b $out_dir/manta/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/manta/manta.evidence.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/manta/manta.evidence.vcf > $out_dir/manta/manta.adjusted.vcf
 # lumpy
-# $SAMTOOLS view -uF 0x0002 $bam | $SAMTOOLS view -uF 0x100 - | $SAMTOOLS view -uF 0x0004 - | $SAMTOOLS view -uF 0x0008 - | $SAMTOOLS view -bF 0x0400 - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.discordant.sort.bam
-# $SAMTOOLS view -h $bam | $ESplitReads_BwaMem -i stdin | $SAMTOOLS view -Sb - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.sr.sort.bam
-# $LUMPY_EXPRESS -B $bam -S $out_dir/lumpy/lumpy.sr.sort.bam -D $out_dir/lumpy/lumpy.discordant.sort.bam -o $out_dir/lumpy/lumpy.vcf
-# $SVTYPER -B $bam -i $out_dir/lumpy/lumpy.vcf > $out_dir/lumpy/lumpy.svtyper.vcf
-# pythoh $SCRIPTS/parser_reads.py -v $out_dir/lumpy/lumpy.svtyper.vcf -b $out_dir/lumpy/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/lumpy/lumpy.evidence.vcf
+$SAMTOOLS view -uF 0x0002 $bam | $SAMTOOLS view -uF 0x100 - | $SAMTOOLS view -uF 0x0004 - | $SAMTOOLS view -uF 0x0008 - | $SAMTOOLS view -bF 0x0400 - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.discordant.sort.bam
+$SAMTOOLS view -h $bam | $ESplitReads_BwaMem -i stdin | $SAMTOOLS view -Sb - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.sr.sort.bam
+$LUMPY_EXPRESS -B $bam -S $out_dir/lumpy/lumpy.sr.sort.bam -D $out_dir/lumpy/lumpy.discordant.sort.bam -o $out_dir/lumpy/lumpy.vcf
+$SVTYPER -B $bam -i $out_dir/lumpy/lumpy.vcf > $out_dir/lumpy/lumpy.svtyper.vcf
+pythoh $SCRIPTS/parser_reads.py -v $out_dir/lumpy/lumpy.svtyper.vcf -b $out_dir/lumpy/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/lumpy/lumpy.evidence.vcf
+python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/lumpy/lumpy.evidence.vcf > $out_dir/lumpy/lumpy.adjusted.vcf
 
-# python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/lumpy/lumpy.evidence.vcf > $out_dir/lumpy/lumpy.adjusted.vcf
-
+#delly
+$DELLY call -g $ref -o $out_dir/delly/delly.bcf  $bam
+$BCFTOOLS view $out_dir/delly/delly.bcf > $out_dir/delly/delly.vcf
+$SVTYPER -B $bam -i $out_dir/delly/delly.vcf > $out_dir/delly/delly.svtyper.vcf
+python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/delly/delly.svtyper.vcf > $out_dir/delly/delly.adjusted.vcf
 # generate input for survivor
 touch $out_dir/sur.input
-# echo "$out_dir/lumpy/lumpy.adjusted.vcf" >> $out_dir/sur.input
+echo "$out_dir/manta/manta.adjusted.vcf" >> $out_dir/sur.input
 echo "$out_dir/svaba/svaba.adjusted.vcf" >> $out_dir/sur.input
-echo "$out_dir/lumpy/manta.adjusted.vcf" >> $out_dir/sur.input
+echo "$out_dir/lumpy/lumpy.adjusted.vcf" >> $out_dir/sur.input
+echo "$out_dir/delly/delly.adjusted.vcf" >> $out_dir/sur.input
+
 #sur
 $SURVIVOR merge $out_dir/survivor_inputs 1000 1 1 0 0 10 $out_dir/survivor.output.vcf
 bcftools sort $out_dir/survivor.output.vcf -o $out_dir/survivor.sort.vcf
-python3 $SCRIPTS/combine_combined.py $out_dir/survivor_sorted.vcf SUR_SAMPLE $out_dir/survivor_inputs $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
+python3 $SCRIPTS/combine_combined.py $out_dir/survivor.sort.vcf SUR_SAMPLE $out_dir/survivor_inputs $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
 bgzip $out_dir/combined.genotyped.vcf
 tabix $out_dir/combined.genotyped.vcf.gz
 $EXTRACT_HAIR --bam $bam --vcf $out_dir/combined.genotyped.vcf.gz --out $out_dir/ext.lst --breakends 1 --mate_at_same 1 --support_read_tag READNAMES
