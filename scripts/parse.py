@@ -27,7 +27,7 @@ def main():
                 evids.append(tmp[2])
             else:
                 tmp = line.split("\t")
-                tmp[7] = tmp[7]+";READNAMES="+",".join(evidences)
+                tmp[7] = tmp[7]+";READNAMES="+",".join(evids)
                 out_vcf.write("\t".join(tmp))
                 evids = []
     elif args.manta:
