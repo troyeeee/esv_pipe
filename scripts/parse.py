@@ -8,7 +8,6 @@ def main():
     parser.add_argument('--lumpy', action='store_true')
     parser.add_argument('--manta', action='store_true')
     args = parser.parse_args()
-    samfile = pysam.AlignmentFile(args.b, "rb")
     evidences = {}
     in_vcf = open(args.v)
     out_vcf = open(args.o,"w")
@@ -32,6 +31,7 @@ def main():
                 out_vcf.write("\t".join(tmp))
                 evids = []
     elif args.manta:
+        samfile = pysam.AlignmentFile(args.b, "rb")
         for read in samfile.fetch():
             evidence_tag = read.get_tags()[-1][-1]
             bnd_id = evidence_tag.split("|")[0]
