@@ -41,15 +41,15 @@ python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/svaba/svaba.svtyper.sv.vcf
 $CONFIGMANTA --bam $bam --referenceFasta $ref --runDir $out_dir/manta --generateEvidenceBam
 $out_dir/manta/runWorkflow.py -m local -j $threads -g 100
 gunzip $out_dir/manta/results/variants/diploidSV.vcf.gz
-cp $out_dir/manta/results/variants/diploidSV.vcf > $out_dir/manta/manta.svtyper.vcf
-python3 $SCRIPTS/parser_reads.py -v $out_dir/manta/manta.svtyper.vcf -b $out_dir/manta/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/manta/manta.evidence.vcf
+cp $out_dir/manta/results/variants/diploidSV.vcf  $out_dir/manta/manta.svtyper.vcf
+python3 $SCRIPTS/parse.py -v $out_dir/manta/manta.svtyper.vcf -b $out_dir/manta/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/manta/manta.evidence.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/manta/manta.evidence.vcf > $out_dir/manta/manta.adjusted.vcf
 # lumpy
 $SAMTOOLS view -uF 0x0002 $bam | $SAMTOOLS view -uF 0x100 - | $SAMTOOLS view -uF 0x0004 - | $SAMTOOLS view -uF 0x0008 - | $SAMTOOLS view -bF 0x0400 - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.discordant.sort.bam
 $SAMTOOLS view -h $bam | $ESplitReads_BwaMem -i stdin | $SAMTOOLS view -Sb - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.sr.sort.bam
 $LUMPY_EXPRESS -B $bam -S $out_dir/lumpy/lumpy.sr.sort.bam -D $out_dir/lumpy/lumpy.discordant.sort.bam -o $out_dir/lumpy/lumpy.vcf
 $SVTYPER -B $bam -i $out_dir/lumpy/lumpy.vcf > $out_dir/lumpy/lumpy.svtyper.vcf
-pythoh $SCRIPTS/parser_reads.py -v $out_dir/lumpy/lumpy.svtyper.vcf -b $out_dir/lumpy/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/lumpy/lumpy.evidence.vcf
+python3 $SCRIPTS/parse.py -v $out_dir/lumpy/lumpy.svtyper.vcf -b $out_dir/lumpy/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/lumpy/lumpy.evidence.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/lumpy/lumpy.evidence.vcf > $out_dir/lumpy/lumpy.adjusted.vcf
 
 #delly
@@ -65,7 +65,7 @@ echo "$out_dir/lumpy/lumpy.adjusted.vcf" >> $out_dir/sur.input
 echo "$out_dir/delly/delly.adjusted.vcf" >> $out_dir/sur.input
 
 #sur
-$SURVIVOR merge $out_dir/survivor_inputs 1000 1 1 0 0 10 $out_dir/survivor.output.vcf
+$SURVIVOR merge $out_dir/sur.input 1000 1 1 0 0 10 $out_dir/survivor.output.vcf
 bcftools sort $out_dir/survivor.output.vcf -o $out_dir/survivor.sort.vcf
 python3 $SCRIPTS/combine_combined.py $out_dir/survivor.sort.vcf SUR_SAMPLE $out_dir/survivor_inputs $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
 bgzip $out_dir/combined.genotyped.vcf
