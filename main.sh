@@ -67,7 +67,7 @@ echo "$out_dir/delly/delly.adjusted.vcf" >> $out_dir/sur.input
 #sur
 $SURVIVOR merge $out_dir/sur.input 1000 1 1 0 0 10 $out_dir/survivor.output.vcf
 bcftools sort $out_dir/survivor.output.vcf -o $out_dir/survivor.sort.vcf
-python3 $SCRIPTS/combine_combined.py $out_dir/survivor.sort.vcf SUR_SAMPLE $out_dir/survivor_inputs $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
+python2 $SCRIPTS/combine_combined.py $out_dir/survivor.sort.vcf SUR_SAMPLE $out_dir/survivor_inputs $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
 bgzip $out_dir/combined.genotyped.vcf
 tabix $out_dir/combined.genotyped.vcf.gz
 $EXTRACT_HAIR --bam $bam --vcf $out_dir/combined.genotyped.vcf.gz --out $out_dir/ext.lst --breakends 1 --mate_at_same 1 --support_read_tag READNAMES
