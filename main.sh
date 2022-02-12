@@ -48,7 +48,7 @@ python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/manta/manta.evidence.vcf >
 $SAMTOOLS view -uF 0x0002 $bam | $SAMTOOLS view -uF 0x100 - | $SAMTOOLS view -uF 0x0004 - | $SAMTOOLS view -uF 0x0008 - | $SAMTOOLS view -bF 0x0400 - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.discordant.sort.bam
 $SAMTOOLS view -h $bam | $ESplitReads_BwaMem -i stdin | $SAMTOOLS view -Sb - | $SAMTOOLS sort - -o $out_dir/lumpy/lumpy.sr.sort.bam
 $LUMPY_EXPRESS -B $bam -S $out_dir/lumpy/lumpy.sr.sort.bam -D $out_dir/lumpy/lumpy.discordant.sort.bam -o $out_dir/lumpy/lumpy.vcf
-$SVTYPER -B $bam -S $out_dir/lumpy/lumpy.sr.sort.bam -i $out_dir/lumpy/lumpy.vcf > $out_dir/lumpy/lumpy.svtyper.vcf
+$SVTYPER -B $bam -i $out_dir/lumpy/lumpy.vcf > $out_dir/lumpy/lumpy.svtyper.vcf
 python3 $SCRIPTS/parse.py -v $out_dir/lumpy/lumpy.svtyper.vcf -b $out_dir/lumpy/results/evidence/evidence_0.test.s.ngs.bam -o $out_dir/lumpy/lumpy.evidence.vcf
 python3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/lumpy/lumpy.evidence.vcf > $out_dir/lumpy/lumpy.adjusted.vcf
 
