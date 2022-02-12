@@ -1,3 +1,4 @@
+#!/bin/bash
 CUTESV=/home/grads/gzpan2/apps/miniconda3/envs/cityu/bin/cuteSV
 SNIFFILES=/home/grads/gzpan2/apps/Sniffles-master/bin/sniffles-core-1.0.12/sniffles
 NANOSV=/home/grads/gzpan2/apps/miniconda3/envs/cityu/bin/NanoSV
@@ -20,7 +21,7 @@ if [ ! -d $out_dir/nanosv ]; then
 fi
 
 # sniffiles
--m $bam -v $out_dir/sniffiles/snif.vcf -s 2 --max_distance 300 -n -1
+$SNIFFILES -m $bam -v $out_dir/sniffiles/snif.vcf -s 2 --max_distance 300 -n -1
 
 # cutesv
-$bam $ref $out_dir/cutesv/cute.vcf $out_dir/cutesv --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 200 --diff_ratio_merging_DEL 0.5 --report_readid --threads $threads
+CUTESV $bam $ref $out_dir/cutesv/cute.vcf $out_dir/cutesv --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 200 --diff_ratio_merging_DEL 0.5 --report_readid --threads $threads
