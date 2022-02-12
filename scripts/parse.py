@@ -47,7 +47,7 @@ def main():
                 out_vcf.write(line)
                 if tag and line.startswith("##INFO"):
                     tag = False
-                    out_vcf.write('##INFO=<ID=READNAMES,Number=1,Type=String,Description="Support reads name">')
+                    out_vcf.write('##INFO=<ID=READNAMES,Number=1,Type=String,Description="Support reads name">\n')
                 continue
             tmp = line.split("\t")
             bnd_id = tmp[2]
