@@ -24,4 +24,4 @@ fi
 $SNIFFILES -m $bam -v $out_dir/sniffiles/snif.vcf -s 2 --max_distance 300 -n -1
 
 # cutesv
-CUTESV $bam $ref $out_dir/cutesv/cute.vcf $out_dir/cutesv --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 200 --diff_ratio_merging_DEL 0.5 --report_readid --threads $threads
+$CUTESV $bam $ref $out_dir/cutesv/cute.vcf $out_dir/cutesv --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 200 --diff_ratio_merging_DEL 0.5 --report_readid --threads $threads
