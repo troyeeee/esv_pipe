@@ -79,7 +79,6 @@ def main():
                 # adds "chr"
                 if "chr" not in tab_split[0]:
                     tab_split[0] = "chr" + tab_split[0]
-
                 support = ""
                 het = 0
                 hom = 0
@@ -91,7 +90,7 @@ def main():
                             het += 1
                         if "1/1" in tab_split[9+i] or "./1" in tab_split[9+i]:
                             hom += 1
-                        if "0/0" in tab_split[9+i]:
+                        if "0/0" in tab_split[9+i] or "./." in tab_split[9+i]:
                             ref += 1
                         # adds SV caller to "support" string if not there already
                         if headers[i] not in support:
@@ -101,24 +100,23 @@ def main():
                     tab_split[7] += ";CALLERS=%s" % support.lstrip(",")
                 else:
                     support = "."
-                    
                 # parses hom/het/ref into short genotype strings
-                tab_split[8] = "GT:SP"
+                tab_split[8] = "GT"
                 if het == 0 and hom == 0:
                     if ref > 0:
-                        tab_split[9] = "0/0:"
+                        tab_split[9] = "0/0"
                         tab_split[5] = "0"
                         tab_split[6] = "Reference"
                     else:
-                        tab_split[9] = "./.:"
+                        tab_split[9] = "0/0"
                         tab_split[5] = "0"
                         tab_split[6] = "Unconfirmed"
                 elif hom > het:
-                    tab_split[9] = "1/1:"
+                    tab_split[9] = "1/1"
                 else:
-                    tab_split[9] = "0/1:"
-                
-                tab_split[9] += support.lstrip(",")
+                    tab_split[9] = "0/1"
+
+                #tab_split[9] += support.lstrip(",")
 
                 # adding size range for SVs
                 # deletions:
@@ -149,10 +147,10 @@ def main():
                             break
                         else:
                             callers.pop(0)
-                if "SVTYPE=DUP" in line and (tab_split[9].split(":")[0] == "0/1" or tab_split[9].split(":")[0] == "1/1"):
+                if "SVTYPE=DUP" in line and (tab_split[9] == "0/1" or tab_split[9] == "1/1"):
                     tab_split[6] = "Unknown"
-                
+
                 # prints final line
                 print "\t".join(tab_split[:10])
-        
+
 main()

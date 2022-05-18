@@ -1,14 +1,13 @@
 import argparse
+import re
 import pysam
 def main():
     parser = argparse.ArgumentParser("parse")
     parser.add_argument('-v', required=True)
     parser.add_argument('-b', required=False)
-    parser.add_argument('--dump_file', required=False)
     parser.add_argument('-o', required=True)
     parser.add_argument('--lumpy', action='store_true')
     parser.add_argument('--manta', action='store_true')
-    parser.add_argument('--delly', action='store_true')
     args = parser.parse_args()
     evidences = {}
     in_vcf = open(args.v)
@@ -30,14 +29,20 @@ def main():
                 evids.append(tmp[2])
             else:
                 tmp = line.split("\t")
-                if len(tmp[2]) > 2 and tmp[2][-2] == "_" and tmp[2][0:-2] in support_reads.keys():
-                    tmp[7] = tmp[7]+";READNAMES="+",".join(support_reads[tmp[2][0:-2]])
+                #if len(tmp[2]) > 2 and tmp[2][-2] == "_" and tmp[2][0:-2] in support_reads.keys():
+                #    tmp[7] = tmp[7]+";READNAMES="+",".join(support_reads[tmp[2][0:-2]])
+                if False:
+                    pass
                 else:
-                    tmp[7] = tmp[7]+";READNAMES="+",".join(evids)
-                    if len(tmp[2]) > 2 and tmp[2][-2] == "_":
-                        support_reads[tmp[2][0:-2]] = evids
+                    #tmp[7] = tmp[7]+";READNAMES="+",".join(evids)
+                    if len(tmp[2]) > 2 and tmp[2][-2:] == "_1":
+                        support_reads[tmp[2][0:-2]] = re.split(r"[=;]",tmp[7])[3]
+                    if len(tmp[2]) > 2 and tmp[2][-2:] == "_2":
+                        vv = re.split(r"[;]",tmp[7])
+                        vv[1]=vv[1] + "=" + support_reads[tmp[2][0:-2]]
+                        tmp[7]=";".join(vv)
                 out_vcf.write("\t".join(tmp))
-                evids = []
+                #evids = []
     elif args.manta:
         samfile = pysam.AlignmentFile(args.b, "rb")
         for read in samfile.fetch():
@@ -63,6 +68,7 @@ def main():
             if bnd_id in evidences.keys():
                 tmp[7] = tmp[7]+";READNAMES="+",".join(evidences[bnd_id])
                 out_vcf.write("\t".join(tmp))
+
 if __name__ == '__main__':
     main()
 
