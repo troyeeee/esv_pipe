@@ -31,7 +31,9 @@ def main():
             continue
         # 
         formats = re.split(';|=', record[7])
+        print(record, "3333")
 
+        print(formats, 'fff')
         if "BND" in formats:
             i = formats.index('SVLEN')
             sv_len = abs(int(formats[i+1]))
@@ -44,9 +46,7 @@ def main():
         # if "]" in record[4] or "[" in record[4]:
         #     out_put.write('\t'.join(record))
         #     continue
-        print(record, "3333")
-
-        print(formats, 'fff')
+        
         
         
         record[3] = str(fa[record[0]][c_pos-1:c_pos+2][0])
