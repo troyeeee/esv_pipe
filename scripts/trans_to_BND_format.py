@@ -33,11 +33,12 @@ def main():
         formats = re.split(';|=', record[7])
         # i = formats.index('SVLEN')
         # sv_len = abs(int(formats[i+1]))
+        print(record, "3333")
+
         print(formats, 'fff')
         i = formats.index('END')
         sv_end = abs(int(formats[i+1]))
         c_pos = int(record[1])
-        print(record, "3333")
         if "]" in record[4] or "[" in record[4]:
             out_put.write('\t'.join(record))
             continue
