@@ -31,17 +31,23 @@ def main():
             continue
         # 
         formats = re.split(';|=', record[7])
-        # i = formats.index('SVLEN')
-        # sv_len = abs(int(formats[i+1]))
-        if "]" in record[4] or "[" in record[4]:
-            out_put.write('\t'.join(record))
-            continue
+
+        if "BND" in formats:
+            i = formats.index('SVLEN')
+            sv_len = abs(int(formats[i+1]))
+            c_pos = int(record[1])
+            sv_end = c_pos + sv_len
+        else:
+            i = formats.index('END')
+            sv_end = abs(int(formats[i+1]))
+            c_pos = int(record[1])
+        # if "]" in record[4] or "[" in record[4]:
+        #     out_put.write('\t'.join(record))
+        #     continue
         print(record, "3333")
 
         print(formats, 'fff')
-        i = formats.index('END')
-        sv_end = abs(int(formats[i+1]))
-        c_pos = int(record[1])
+        
         
         record[3] = str(fa[record[0]][c_pos-1:c_pos+2][0])
         if "INV" in record[4]:
