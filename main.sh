@@ -64,17 +64,17 @@ fi
 # $PYTHON3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/lumpy/lumpy.svtyper.vcf > $out_dir/lumpy/lumpy.adjusted2.vcf
 # $PYTHON3 $SCRIPTS/parse2.py -v $out_dir/lumpy/lumpy.adjusted2.vcf --lumpy -o $out_dir/lumpy/lumpy.adjusted.vcf
 # # trans to BND format
-# $PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/lumpy/lumpy.adjusted.vcf -f $ref -o $out_dir/lumpy/lumpy.adjusted.BND.vcf
+$PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/lumpy/lumpy.adjusted.vcf -f $ref -o $out_dir/lumpy/lumpy.adjusted.BND.vcf
 
 
 #delly
-$DELLY call -g $ref -o $out_dir/delly/delly.bcf  $bam --dump $out_dir/delly/delly.dump.gz
-$BCFTOOLS view $out_dir/delly/delly.bcf > $out_dir/delly/delly.vcf
-cp $out_dir/delly/delly.vcf  $out_dir/delly/delly.svtyper.vcf
-gunzip $out_dir/delly/delly.dump.gz
-$BCFTOOLS view -f 'PASS' $out_dir/delly/delly.svtyper.vcf -o $out_dir/delly/delly.pass.vcf
-$PYTHON3 $SCRIPTS/pdelly.py -v $out_dir/delly/delly.pass.vcf -r $ref -o $out_dir/delly/delly.evidence.vcf -d $out_dir/delly/delly.dump
-$PYTHON3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/delly/delly.evidence.vcf > $out_dir/delly/delly.adjusted.vcf
+# $DELLY call -g $ref -o $out_dir/delly/delly.bcf  $bam --dump $out_dir/delly/delly.dump.gz
+# $BCFTOOLS view $out_dir/delly/delly.bcf > $out_dir/delly/delly.vcf
+# cp $out_dir/delly/delly.vcf  $out_dir/delly/delly.svtyper.vcf
+# gunzip $out_dir/delly/delly.dump.gz
+# $BCFTOOLS view -f 'PASS' $out_dir/delly/delly.svtyper.vcf -o $out_dir/delly/delly.pass.vcf
+# $PYTHON3 $SCRIPTS/pdelly.py -v $out_dir/delly/delly.pass.vcf -r $ref -o $out_dir/delly/delly.evidence.vcf -d $out_dir/delly/delly.dump
+# $PYTHON3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/delly/delly.evidence.vcf > $out_dir/delly/delly.adjusted.vcf
 # trans to BND format
 $PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/delly/delly.adjusted.vcf -f $ref -o $out_dir/delly/delly.adjusted.BND.vcf
 # generate input for survivor
