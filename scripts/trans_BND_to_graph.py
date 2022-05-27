@@ -2,7 +2,7 @@ import vcf
 from chr_cfg import *
 from ordered_set import OrderedSet
 
-vcf_reader = vcf.Reader(filename=r'/Users/troye/Documents/SVAS/combined.genotyped.sort.vcf')
+vcf_reader = vcf.Reader(filename=r'/Users/troye/Documents/SVAS/combined.genotyped.sort.true.vcf')
 
 
 
@@ -23,8 +23,8 @@ for chrom in CHROMS:
 # pre_chr = ''
 for record in vcf_reader:
     if record.CHROM == record.INFO['CHR2'] == "chr1":
-        if record.var_subtype=="INV":
-            print(record.ID)
+        # if record.var_subtype=="INV":
+        #     print(record.ID)
         pos_map[record.CHROM].add(record.POS)
         pos_rec_map[record.CHROM] = record
         if record.var_subtype=="DUP":
@@ -41,6 +41,8 @@ for k, v in pos_map.items():
         pre_pos = 0
         for i in v:
             seg_name = str(pre_pos)+"_"+str(i)
+            if i - pre_pos <=2:
+                print(k, pre_pos, i )
             pos_to_seg[k][pre_pos] = seg_name
             pos_to_seg[k][i] = seg_name
             if pre_pos in dup_points[k]:

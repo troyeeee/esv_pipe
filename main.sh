@@ -89,7 +89,7 @@ echo "$out_dir/lumpy/lumpy.adjusted.BND.vcf" >> $out_dir/sur.input
 echo "$out_dir/delly/delly.adjusted.BND.vcf" >> $out_dir/sur.input
 
 #sur
-$SURVIVOR merge $out_dir/sur.input 150 2 1 0 0 10 $out_dir/survivor.output.vcf
+$SURVIVOR merge $out_dir/sur.input 450 2 1 0 0 10 $out_dir/survivor.output.vcf
 $BCFTOOLS sort $out_dir/survivor.output.vcf -o $out_dir/survivor.sort.vcf
 $PYTHON2 $SCRIPTS/combine_combined.py $out_dir/survivor.sort.vcf $sample $out_dir/sur.input $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
 $BGZIP -f $out_dir/combined.genotyped.vcf
