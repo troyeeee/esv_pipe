@@ -15,7 +15,9 @@ for chrom in CHROMS:
 
 # pre_chr = ''
 for record in vcf_reader:
-    if record.CHROM == record.INFO['CHR2']:
+    if record.CHROM == record.INFO['CHR2'] == "chr1":
+        if record.var_subtype=="INV":
+            print(record.ID)
         pos_map[record.CHROM].add(record.POS)
         if record.var_subtype=="INS":
             dup_segs[record.CHROM][record.POS] = str(record.POS) + "_INS"
