@@ -36,9 +36,9 @@ def main():
         if "]" in record[4] or "[" in record[4]:
             out_put.write('\t'.join(record))
             continue
-        print(record, "3333")
+        # print(record, "3333")
 
-        print(formats, 'fff')
+        # print(formats, 'fff')
         i = formats.index('END')
         sv_end = abs(int(formats[i+1]))
         c_pos = int(record[1])
