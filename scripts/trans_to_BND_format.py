@@ -107,7 +107,7 @@ def main():
             record[2] = ID + "_" + r1+":2"
             record[4] = alt2
             # out_put.write('\t'.join(record))
-        if "INS" in record[4] "INS" in record[2]:
+        if "INS" in record[4] or "INS" in record[2]:
             r1 = record[1]
             r2 = str(c_pos + 1)
             alt1 = "]" + record[0] + ":" + r2+"]" + "N"
