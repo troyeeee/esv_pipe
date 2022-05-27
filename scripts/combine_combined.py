@@ -70,7 +70,8 @@ def main():
                 end = tab_split[7].replace("CIEND","XXXXX").split("END=")[-1].split(";")[0].split("\t")[0]
                 end_position = int(end)
                 # possibly same as correct_max_position?
-                if end_position < position:
+                if (end_position < position) and ("INV" not in tab_split[2]):
+                    
                     new_end = str(position)
                     new_start = end
                     tab_split[1] = new_start
