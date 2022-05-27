@@ -64,7 +64,7 @@ fi
 # $PYTHON3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/lumpy/lumpy.svtyper.vcf > $out_dir/lumpy/lumpy.adjusted2.vcf
 # $PYTHON3 $SCRIPTS/parse2.py -v $out_dir/lumpy/lumpy.adjusted2.vcf --lumpy -o $out_dir/lumpy/lumpy.adjusted.vcf
 # # trans to BND format
-$PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/lumpy/lumpy.adjusted.vcf -f $ref -o $out_dir/lumpy/lumpy.adjusted.BND.vcf
+# $PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/lumpy/lumpy.adjusted.vcf -f $ref -o $out_dir/lumpy/lumpy.adjusted.BND.vcf
 
 
 #delly
@@ -76,20 +76,20 @@ $PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/lumpy/lumpy.adjusted.vcf -f
 # $PYTHON3 $SCRIPTS/pdelly.py -v $out_dir/delly/delly.pass.vcf -r $ref -o $out_dir/delly/delly.evidence.vcf -d $out_dir/delly/delly.dump
 # $PYTHON3 $SCRIPTS/adjust_svtyper_genotypes.py $out_dir/delly/delly.evidence.vcf > $out_dir/delly/delly.adjusted.vcf
 # trans to BND format
-$PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/delly/delly.adjusted.vcf -f $ref -o $out_dir/delly/delly.adjusted.BND.vcf
+#$PYTHON3 $SCRIPTS/trans_to_BND_format.py -v $out_dir/delly/delly.adjusted.vcf -f $ref -o $out_dir/delly/delly.adjusted.BND.vcf
 # generate input for survivor
-if [ -f "$out_dir/sur.input" ]; then
-	rm $out_dir/sur.input
-fi
-touch $out_dir/sur.input
-echo "$out_dir/manta/manta.adjusted.vcf" >> $out_dir/sur.input
-echo "$out_dir/svaba/svaba.adjusted.vcf" >> $out_dir/sur.input
-echo "$out_dir/lumpy/lumpy.adjusted.BND.vcf" >> $out_dir/sur.input
-echo "$out_dir/delly/delly.adjusted.BND.vcf" >> $out_dir/sur.input
+# if [ -f "$out_dir/sur.input" ]; then
+# 	rm $out_dir/sur.input
+# fi
+# touch $out_dir/sur.input
+# echo "$out_dir/manta/manta.adjusted.vcf" >> $out_dir/sur.input
+# echo "$out_dir/svaba/svaba.adjusted.vcf" >> $out_dir/sur.input
+# echo "$out_dir/lumpy/lumpy.adjusted.BND.vcf" >> $out_dir/sur.input
+# echo "$out_dir/delly/delly.adjusted.BND.vcf" >> $out_dir/sur.input
 
 #sur
-$SURVIVOR merge $out_dir/sur.input 1000 2 1 0 0 10 $out_dir/survivor.output.vcf
-$BCFTOOLS sort $out_dir/survivor.output.vcf -o $out_dir/survivor.sort.vcf
+# $SURVIVOR merge $out_dir/sur.input 1000 2 1 0 0 10 $out_dir/survivor.output.vcf
+# $BCFTOOLS sort $out_dir/survivor.output.vcf -o $out_dir/survivor.sort.vcf
 $PYTHON2 $SCRIPTS/combine_combined.py $out_dir/survivor.sort.vcf $sample $out_dir/sur.input $SCRIPTS/all.phred.txt > $out_dir/combined.genotyped.vcf
 $BGZIP -f $out_dir/combined.genotyped.vcf
 $BCFTOOLS sort $out_dir/combined.genotyped.vcf.gz -Oz > $out_dir/combined.genotyped.sort.vcf.gz
