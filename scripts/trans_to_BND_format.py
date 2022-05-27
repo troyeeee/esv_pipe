@@ -44,7 +44,7 @@ def main():
         c_pos = int(record[1])
         
         record[3] = str(fa[record[0]][c_pos-1:c_pos+2][0])
-        if "INV" in record[4]:
+        if "INV" in record[4] or "INV" in record[2]:
             r1 = record[1]
             r2 = str(c_pos + 1)
             r3 = str(sv_end)
@@ -64,20 +64,20 @@ def main():
             record[2] = ID + "_" + r2+":1"
             record[3] = str(fa[record[0]][c_pos:c_pos+2][0])
             record[4] = alt2
-            out_put.write('\t'.join(record))
+            # out_put.write('\t'.join(record))
             # 3
             record[1] = r3
             record[2] = ID + "_" + r1+":2"
             record[3] = str(fa[record[0]][sv_end-1:sv_end+2][0])
             record[4] = alt3
-            out_put.write('\t'.join(record))
+            # out_put.write('\t'.join(record))
             # 4
             record[1] = r4
             record[2] = ID + "_" + r2+":2"
             record[3]= str(fa[record[0]][sv_end:sv_end+2][0])
             record[4] = alt4
-            out_put.write('\t'.join(record))
-        if "DEL" in record[4]:
+            # out_put.write('\t'.join(record))
+        if "DEL" in record[4] or "DEL" in record[2]:
             r1 = record[1]
             r2 = str(sv_end + 1)
             alt1 = record[3] + "[" + record[0] + ":" + r2+"["
@@ -91,8 +91,8 @@ def main():
             record[1] = r2
             record[2] = ID + "_" + r1+":2"
             record[4] = alt2
-            out_put.write('\t'.join(record))
-        if "DUP" in record[4]:
+            # out_put.write('\t'.join(record))
+        if "DUP" in record[4] or "DUP" in record[2]:
             r1 = record[1]
             r2 = str(sv_end)
             alt1 = "]" + record[0] + ":" + r2+"]" + record[3]
@@ -106,8 +106,8 @@ def main():
             record[1] = r2
             record[2] = ID + "_" + r1+":2"
             record[4] = alt2
-            out_put.write('\t'.join(record))
-        if "INS" in record[4]:
+            # out_put.write('\t'.join(record))
+        if "INS" in record[4] "INS" in record[2]:
             r1 = record[1]
             r2 = str(c_pos + 1)
             alt1 = "]" + record[0] + ":" + r2+"]" + "N"
